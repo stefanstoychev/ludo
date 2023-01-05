@@ -19,7 +19,7 @@ jobs:
       - run: flutter config --enable-web
       - run: flutter pub get
       #     - run: flutter test
-      - run: flutter build web
+      - run: flutter build web --no-sound-null-safety
       - name: Archive Production Artifact
         uses: actions/upload-artifact@master
         with:
