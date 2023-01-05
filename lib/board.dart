@@ -60,8 +60,7 @@ class Board extends StatelessWidget {
 
     for (int i = 0; i < 3; i++) {
       current = rotator.rotate(current);
-      // playerPaths.add(current);
-      playerPaths.add(_playerPath);
+      playerPaths.add(current);
     }
   }
 
