@@ -93,16 +93,16 @@ class _PlayerPageState extends State<PlayerPage> {
   Widget _buildRowDiceButton(bool canRowDice) {
     return Row(
       children: [
-        ...List.generate(6, (index) =>
-            ElevatedButton(
-                onPressed: canRowDice
-                    ? () {
-                  _rolledValue = index + 1;
-
-                  setState(() {});
-                }
-                    : null,
-                child: Text("Row ${index + 1}")),),
+        // ...List.generate(6, (index) =>
+        //     ElevatedButton(
+        //         onPressed: canRowDice
+        //             ? () {
+        //           _rolledValue = index + 1;
+        //
+        //           setState(() {});
+        //         }
+        //             : null,
+        //         child: Text("Row ${index + 1}")),),
         ElevatedButton(
             onPressed: canRowDice
                 ? () {
