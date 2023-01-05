@@ -32,17 +32,22 @@ class Board extends StatelessWidget {
 
   List<List<List<int>>> playerPaths = [];
 
-  static Tile SU = Tile(icon: Icons.arrow_circle_down, color: Colors.blue);
-  static Tile SD = Tile(icon: Icons.arrow_circle_up, color: Colors.red);
+  static Tile SU = Tile(icon: CupertinoIcons.arrow_down_circle, color: Colors.blue);
+  static Tile SD = Tile(icon: CupertinoIcons.arrow_up_circle, color: Colors.red);
   static Tile SR =
-      Tile(icon: Icons.arrow_circle_left_outlined, color: Colors.green);
+      Tile(icon: CupertinoIcons.arrow_left_circle, color: Colors.green);
   static Tile SL =
-      Tile(icon: Icons.arrow_circle_right_outlined, color: Colors.yellow);
+      Tile(icon: CupertinoIcons.arrow_right_circle, color: Colors.yellow);
 
   static Tile FU = Tile(icon: Icons.home, color: Colors.blue);
   static Tile FD = Tile(icon: Icons.home, color: Colors.red);
   static Tile FR = Tile(icon: Icons.home, color: Colors.green);
   static Tile FL = Tile(icon: Icons.home, color: Colors.yellow);
+
+  static Tile PU = Tile(icon: CupertinoIcons.arrow_turn_right_down, color: Colors.blue);
+  static Tile PD = Tile(icon: CupertinoIcons.arrow_turn_left_up, color: Colors.red);
+  static Tile PR = Tile(icon: CupertinoIcons.arrow_turn_down_left, color: Colors.green);
+  static Tile PL = Tile(icon: CupertinoIcons.arrow_turn_up_right, color: Colors.yellow);
 
   static Tile EA = Tile(
       icon: Icons.add_circle,
@@ -53,21 +58,21 @@ class Board extends StatelessWidget {
       Tile(icon: Icons.accessibility, color: Colors.grey, isEmpty: true);
 
   final _board = [
-    [EA, EA, EA, EA, EA, EA, PA, PA, SU, EA, EA, EA, EA, EA, EA],
+    [EA, EA, EA, EA, EA, EA, PA, PU, SU, EA, EA, EA, EA, EA, EA],
     [EA, PA, EA, EA, EA, EA, PA, FU, PA, EA, EA, EA, EA, PA, EA],
     [EA, EA, EA, EA, EA, EA, PA, FU, PA, EA, EA, EA, EA, EA, EA],
     [EA, EA, EA, EA, EA, EA, PA, FU, PA, EA, EA, EA, EA, EA, EA],
     [EA, EA, EA, EA, EA, EA, PA, FU, PA, EA, EA, EA, EA, EA, EA],
     [EA, EA, EA, EA, EA, PA, PA, FU, PA, PA, EA, EA, EA, EA, EA],
     [SL, PA, PA, PA, PA, PA, EA, FU, EA, PA, PA, PA, PA, PA, PA],
-    [PA, FL, FL, FL, FL, FL, FL, EA, FR, FR, FR, FR, FR, FR, PA],
+    [PL, FL, FL, FL, FL, FL, FL, EA, FR, FR, FR, FR, FR, FR, PR],
     [PA, PA, PA, PA, PA, PA, EA, FD, EA, PA, PA, PA, PA, PA, SR],
     [EA, EA, EA, EA, EA, PA, PA, FD, PA, PA, EA, EA, EA, EA, EA],
     [EA, EA, EA, EA, EA, EA, PA, FD, PA, EA, EA, EA, EA, EA, EA],
     [EA, EA, EA, EA, EA, EA, PA, FD, PA, EA, EA, EA, EA, EA, EA],
     [EA, EA, EA, EA, EA, EA, PA, FD, PA, EA, EA, EA, EA, EA, EA],
     [EA, PA, EA, EA, EA, EA, PA, FD, PA, EA, EA, EA, EA, PA, EA],
-    [EA, EA, EA, EA, EA, EA, SD, PA, PA, EA, EA, EA, EA, EA, EA],
+    [EA, EA, EA, EA, EA, EA, SD, PD, PA, EA, EA, EA, EA, EA, EA],
   ];
 
   List<Color> colors = [Colors.red, Colors.green, Colors.blue, Colors.yellow];
