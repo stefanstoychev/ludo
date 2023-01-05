@@ -122,22 +122,23 @@ class Board extends StatelessWidget {
     var pawnsOnCell = pawns
         .where((element) => element.x == colIndex && element.y == rowIndex);
 
-    Color color = Colors.blueGrey;
+    Color color = Colors.grey.shade400;
 
     String text = "";
 
+    Widget child;
     if (pawnsOnCell.isNotEmpty) {
-      color =
-          colors[playerService.playerIds.indexOf(pawnsOnCell.first.ownerId)];
+      color = colors[playerService.playerIds.indexOf(pawnsOnCell.first.ownerId)];
       text = "${pawnsOnCell.length}";
+      child = Text(text);
+
     } else {
-      color = tile == 1 ? Colors.white70 : Colors.white;
+
+      if (tile.isEmpty)
+        child = Text("");
+      else
+        child = Icon(tile.icon, color: tile.color);
     }
-
-    Widget child = Text(text);
-
-    if (!tile.isEmpty)
-      child = Icon(tile.icon, color: tile.color);
 
     return Container(
       height: size,
@@ -146,7 +147,7 @@ class Board extends StatelessWidget {
       child: child,
       decoration: tile.hasBorder
           ? BoxDecoration(
-              color: Colors.grey,
+              color: color,
               border: Border.all(width: 1, color: Colors.blueGrey))
           : null,
     );
