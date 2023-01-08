@@ -40,14 +40,16 @@ Future<void> main() async {
   if (!isHost) {
     var playerData = PlayerData(session: session);
 
-    await playerData.joinPlayer();
     service = await playerData.initLiveQuery();
+    await playerData.joinPlayer();
+
     child = PlayerPage(playerData: playerData);
   } else {
     var hostData = HostData(session: session);
 
-    await hostData.startGame();
     service = await hostData.initLiveQuery(gameController);
+
+    await hostData.startGame();
 
     child = HostPage(
       session: session,

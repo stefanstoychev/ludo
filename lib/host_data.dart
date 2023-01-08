@@ -23,6 +23,7 @@ class HostData {
     Subscription playerSubscription = await liveQuery.client.subscribe(playerQuery);
 
     playerSubscription.on(LiveQueryEvent.create, (value) {
+      print(" #### Game created event called");
       var objectId = (value as ParseObject).objectId;
 
       service.addPlayer(objectId);
@@ -34,6 +35,7 @@ class HostData {
     Subscription pawnSubscription = await liveQuery.client.subscribe(pawnQuery);
 
     pawnSubscription.on(LiveQueryEvent.create, (value) {
+      print(" #### Player has joined event called");
       var objectId = (value as ParseObject).objectId;
       var ownerId = (value as ParseObject).get("PlayerId");
 
@@ -41,6 +43,7 @@ class HostData {
     });
 
     pawnSubscription.on(LiveQueryEvent.update, (value) {
+      print(" #### Pawn moved");
       var pawn = value as ParseObject;
 
       var objectId = pawn.objectId;
@@ -56,7 +59,7 @@ class HostData {
 
     gameSubscription.on(LiveQueryEvent.update, (value) {
 
-      print(value);
+      print("### Player moved");
 
       var game = value as ParseObject;
 

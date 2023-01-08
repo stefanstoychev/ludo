@@ -8,7 +8,6 @@ import 'provider/player_service.dart';
 import 'utils/rotator.dart';
 
 class Board extends StatelessWidget {
-  final double size = 30;
 
   final _playerPath = [
     [13, 1],
@@ -32,8 +31,10 @@ class Board extends StatelessWidget {
 
   List<List<List<int>>> playerPaths = [];
 
-  static Tile SU = Tile(icon: CupertinoIcons.arrow_down_circle, color: Colors.blue);
-  static Tile SD = Tile(icon: CupertinoIcons.arrow_up_circle, color: Colors.red);
+  static Tile SU =
+      Tile(icon: CupertinoIcons.arrow_down_circle, color: Colors.blue);
+  static Tile SD =
+      Tile(icon: CupertinoIcons.arrow_up_circle, color: Colors.red);
   static Tile SR =
       Tile(icon: CupertinoIcons.arrow_left_circle, color: Colors.green);
   static Tile SL =
@@ -44,10 +45,14 @@ class Board extends StatelessWidget {
   static Tile FR = Tile(icon: Icons.home, color: Colors.green);
   static Tile FL = Tile(icon: Icons.home, color: Colors.yellow);
 
-  static Tile PU = Tile(icon: CupertinoIcons.arrow_turn_right_down, color: Colors.blue);
-  static Tile PD = Tile(icon: CupertinoIcons.arrow_turn_left_up, color: Colors.red);
-  static Tile PR = Tile(icon: CupertinoIcons.arrow_turn_down_left, color: Colors.green);
-  static Tile PL = Tile(icon: CupertinoIcons.arrow_turn_up_right, color: Colors.yellow);
+  static Tile PU =
+      Tile(icon: CupertinoIcons.arrow_turn_right_down, color: Colors.blue);
+  static Tile PD =
+      Tile(icon: CupertinoIcons.arrow_turn_left_up, color: Colors.red);
+  static Tile PR =
+      Tile(icon: CupertinoIcons.arrow_turn_down_left, color: Colors.green);
+  static Tile PL =
+      Tile(icon: CupertinoIcons.arrow_turn_up_right, color: Colors.yellow);
 
   static Tile EA = Tile(
       icon: Icons.add_circle,
@@ -94,13 +99,13 @@ class Board extends StatelessWidget {
   Widget build(BuildContext context) {
     var playerService = Provider.of<PlayerService>(context);
 
-    return Column(
-      children: [
-        Column(
-          children: List.generate(_board.length, (colIndex) {
-            var col = _board[colIndex];
+    return Expanded(
+      child: Column(
+        children: List.generate(_board.length, (colIndex) {
+          var col = _board[colIndex];
 
-            return Row(
+          return Expanded(
+            child: Row(
               children: List.generate(col.length, (rowIndex) {
                 var row = col[rowIndex];
 
@@ -108,10 +113,10 @@ class Board extends StatelessWidget {
 
                 return _buildCell(playerService, tileCode, colIndex, rowIndex);
               }),
-            );
-          }),
-        ),
-      ],
+            ),
+          );
+        }),
+      ),
     );
   }
 
@@ -128,28 +133,28 @@ class Board extends StatelessWidget {
 
     Widget child;
     if (pawnsOnCell.isNotEmpty) {
-      color = colors[playerService.playerIds.indexOf(pawnsOnCell.first.ownerId)];
+      color =
+          colors[playerService.playerIds.indexOf(pawnsOnCell.first.ownerId)];
       text = "${pawnsOnCell.length}";
       child = Text(text);
-
     } else {
-
-      if (tile.isEmpty)
-        child = Text("");
-      else
+      if (tile.isEmpty) {
+        child = const Text("");
+      } else {
         child = Icon(tile.icon, color: tile.color);
+      }
     }
 
-    return Container(
-      height: size,
-      width: size,
-      alignment: Alignment.center,
-      child: child,
+    return Expanded(
+        child: Container(
+      height: double.infinity,
+      width: double.infinity,
       decoration: tile.hasBorder
           ? BoxDecoration(
               color: color,
               border: Border.all(width: 1, color: Colors.blueGrey))
           : null,
-    );
+      child: child,
+    ));
   }
 }

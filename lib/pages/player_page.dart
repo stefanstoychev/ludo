@@ -69,7 +69,6 @@ class _PlayerPageState extends State<PlayerPage> {
     return widget.playerData.pawns
         .map((pawn) => Row(
           children: [
-            Text("Position: ${pawn.get("Position")}"),
             ElevatedButton(
                 onPressed: canMove && (pawnToAvailableMoveAmount[pawn])! > 0
                     ? () async {
