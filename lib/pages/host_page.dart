@@ -55,15 +55,14 @@ class _HostPageState extends State<HostPage> {
         child: Text("Start"));
 
     return Scaffold(
-      body: Center(
-          child: Row(
+      body: Row(
         children: [
           Container(
             height: boardSize,
             width: boardSize,
-            child: board,
             decoration: BoxDecoration(
                 border: Border.all(width: 2, color: Colors.blueGrey)),
+            child: board,
           ),
           Column(
             children: [
@@ -73,7 +72,7 @@ class _HostPageState extends State<HostPage> {
             ],
           )
         ],
-      )),
+      ),
     );
   }
 

@@ -8,7 +8,6 @@ import 'provider/player_service.dart';
 import 'utils/rotator.dart';
 
 class Board extends StatelessWidget {
-
   final _playerPath = [
     [13, 1],
     ...List.generate(6, (index) => [9 + index, 6]).reversed,
@@ -99,21 +98,36 @@ class Board extends StatelessWidget {
   Widget build(BuildContext context) {
     var playerService = Provider.of<PlayerService>(context);
 
+    var size = _board.length * _board.first.length;
+
+    return GridView.count(
+      // Create a grid with 2 columns. If you change the scrollDirection to
+      // horizontal, this produces 2 rows.
+      crossAxisCount: _board.length,
+      // Generate 100 widgets that display their index in the List.
+      children: List.generate(size, (index) {
+        var colIndex = index ~/ _board.length;
+        var rowIndex = index % _board.length;
+
+        Tile tileCode = _board[colIndex][rowIndex];
+
+        return _buildCell(playerService, tileCode, colIndex, rowIndex);
+      }),
+    );
+
     return Expanded(
       child: Column(
         children: List.generate(_board.length, (colIndex) {
           var col = _board[colIndex];
 
-          return Expanded(
-            child: Row(
-              children: List.generate(col.length, (rowIndex) {
-                var row = col[rowIndex];
+          return Row(
+            children: List.generate(col.length, (rowIndex) {
+              var row = col[rowIndex];
 
-                Tile tileCode = row;
+              Tile tileCode = row;
 
-                return _buildCell(playerService, tileCode, colIndex, rowIndex);
-              }),
-            ),
+              return _buildCell(playerService, tileCode, colIndex, rowIndex);
+            }),
           );
         }),
       ),
@@ -145,16 +159,25 @@ class Board extends StatelessWidget {
       }
     }
 
+    return Container(
+        decoration: tile.hasBorder
+            ? BoxDecoration(
+                color: color,
+                border: Border.all(width: 1, color: Colors.blueGrey))
+            : null,
+        child: child);
+
     return Expanded(
-        child: Container(
-      height: double.infinity,
-      width: double.infinity,
-      decoration: tile.hasBorder
-          ? BoxDecoration(
-              color: color,
-              border: Border.all(width: 1, color: Colors.blueGrey))
-          : null,
-      child: child,
-    ));
+      child: Container(
+        height: double.infinity,
+        width: double.infinity,
+        decoration: tile.hasBorder
+            ? BoxDecoration(
+                color: color,
+                border: Border.all(width: 1, color: Colors.blueGrey))
+            : null,
+        child: child,
+      ),
+    );
   }
 }
