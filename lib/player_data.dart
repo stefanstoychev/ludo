@@ -27,6 +27,7 @@ class PlayerData {
     for (var i = 0; i < 4; i++) {
       var pawn = ParseObject(pawnCollection)
         ..set('Position', 0)
+        ..set('Number', i+1)
         ..set('Session', session)
         ..set('PlayerId', playerId);
 

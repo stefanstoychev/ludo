@@ -77,7 +77,7 @@ class _PlayerPageState extends State<PlayerPage> {
                             .then((value) => _endTurn(service.session));
                       }
                     : null,
-                child: Text("Move ${pawn.objectId} $_rolledValue")),
+                child: Text("Move ${pawn.get("Number")}")),
           ],
         ))
         .toList();

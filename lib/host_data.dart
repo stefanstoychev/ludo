@@ -38,8 +38,9 @@ class HostData {
       print(" #### Player has joined event called");
       var objectId = (value as ParseObject).objectId;
       var ownerId = (value as ParseObject).get("PlayerId");
+      var number = (value as ParseObject).get<int>("Number");
 
-      service.addPawn(objectId, ownerId);
+      service.addPawn(objectId, ownerId, number);
     });
 
     pawnSubscription.on(LiveQueryEvent.update, (value) {

@@ -6,6 +6,7 @@ import 'model/pawn.dart';
 import 'model/tile.dart';
 import 'provider/player_service.dart';
 import 'utils/rotator.dart';
+import 'package:fluttericon/rpg_awesome_icons.dart';
 
 class Board extends StatelessWidget {
   final _playerPath = [
@@ -114,24 +115,6 @@ class Board extends StatelessWidget {
         return _buildCell(playerService, tileCode, colIndex, rowIndex);
       }),
     );
-
-    return Expanded(
-      child: Column(
-        children: List.generate(_board.length, (colIndex) {
-          var col = _board[colIndex];
-
-          return Row(
-            children: List.generate(col.length, (rowIndex) {
-              var row = col[rowIndex];
-
-              Tile tileCode = row;
-
-              return _buildCell(playerService, tileCode, colIndex, rowIndex);
-            }),
-          );
-        }),
-      ),
-    );
   }
 
   Widget _buildCell(
@@ -151,6 +134,7 @@ class Board extends StatelessWidget {
           colors[playerService.playerIds.indexOf(pawnsOnCell.first.ownerId)];
       text = "${pawnsOnCell.length}";
       child = Text(text);
+      child = GridView.count(crossAxisCount: 2,children: pawnsOnCell.map((e) => FittedBox(child:Text("${e.number}"))).toList(),);
     } else {
       if (tile.isEmpty) {
         child = const Text("");
@@ -166,18 +150,5 @@ class Board extends StatelessWidget {
                 border: Border.all(width: 1, color: Colors.blueGrey))
             : null,
         child: child);
-
-    return Expanded(
-      child: Container(
-        height: double.infinity,
-        width: double.infinity,
-        decoration: tile.hasBorder
-            ? BoxDecoration(
-                color: color,
-                border: Border.all(width: 1, color: Colors.blueGrey))
-            : null,
-        child: child,
-      ),
-    );
   }
 }

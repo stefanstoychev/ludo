@@ -31,7 +31,7 @@ class PlayerService with ChangeNotifier {
     notifyListeners();
   }
 
-  void addPawn(String pawnId, String ownerId) {
+  void addPawn(String pawnId, String ownerId, int number) {
     var playerIndex = getIndex(ownerId);
 
     var first = Board().playerPaths[playerIndex].first;
@@ -39,7 +39,7 @@ class PlayerService with ChangeNotifier {
     var x = first[0];
     var y = first[1];
 
-    var pawn = Pawn(id: pawnId, ownerId: ownerId, x: x, y: y, position: 0);
+    var pawn = Pawn(id: pawnId, ownerId: ownerId, x: x, y: y, position: 0, number: number);
 
     pawns.add(pawn);
 
