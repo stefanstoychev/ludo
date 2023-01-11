@@ -7,10 +7,8 @@ import 'package:parse_test/game_controller.dart';
 import 'package:parse_test/pages/player_page.dart';
 import 'package:parse_test/player_data.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
-import 'board.dart';
-import 'collections.dart';
+import 'board_data.dart';
 import 'host_data.dart';
 import 'pages/host_page.dart';
 import 'provider/player_service.dart';
@@ -18,36 +16,42 @@ import 'provider/player_service.dart';
 String keyApplicationId = r"QrSbLXkrKHsybyjhJb1giMgF07HeGXFvVAjY9UCI";
 String keyParseServerUrl = r"https://parseapi.back4app.com";
 String clientKey = r"8tYgH0RfOknW8fMJ0d1NNGDhowVpndgGEXiBDTxW";
-
 String keyLivequeryUrl = r"https://testappstefan.b4a.io";
+
 String session = Guid.newGuid.value ?? "";
 
 var url = Uri.base.toString();
 
 Future<void> main() async {
+
   usePathUrlStrategy();
 
   var hasSessionParam = getSessionFromUrlParams();
 
   await initializeParse();
 
-  PlayerService? service;
   GameController gameController = GameController();
+
+  var boardData = BoardData();
+
   Widget child;
 
   var isHost = !hasSessionParam;
 
+  final service = PlayerService(session: session,board: boardData);
+
   if (!isHost) {
     var playerData = PlayerData(session: session);
 
-    service = await playerData.initLiveQuery();
+    await playerData.initLiveQuery(service);
+
     await playerData.joinPlayer();
 
     child = PlayerPage(playerData: playerData);
   } else {
     var hostData = HostData(session: session);
 
-    service = await hostData.initLiveQuery(gameController);
+    await hostData.initLiveQuery(gameController, service);
 
     await hostData.startGame();
 
@@ -57,11 +61,19 @@ Future<void> main() async {
     );
   }
 
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => service,),
-        ChangeNotifierProvider(create: (_) => gameController,)
+        ChangeNotifierProvider(
+          create: (_) => service,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => gameController,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => boardData,
+        ),
       ],
       child: MyApp(
         child: child,
@@ -85,8 +97,8 @@ bool getSessionFromUrlParams() {
   }
 }
 
-Future<void> initializeParse() async {
-  var parse = await Parse().initialize(
+Future<Parse> initializeParse() {
+  return Parse().initialize(
     keyApplicationId,
     keyParseServerUrl,
     liveQueryUrl: keyLivequeryUrl,
@@ -101,11 +113,10 @@ class MyApp extends StatelessWidget {
 
   const MyApp({Key? key, required this.child}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Ludo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

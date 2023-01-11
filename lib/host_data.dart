@@ -12,10 +12,9 @@ class HostData {
 
   HostData({required this.session});
 
-  Future<PlayerService> initLiveQuery(GameController gameController) async {
-    final LiveQuery liveQuery = LiveQuery();
+  Future<void> initLiveQuery(GameController gameController, PlayerService service) async {
 
-    var service = PlayerService(session: session);
+    final LiveQuery liveQuery = LiveQuery();
 
     var playerQuery = QueryBuilder<ParseObject>(ParseObject(playerCollection))
       ..whereEqualTo('Session', session);
@@ -76,8 +75,6 @@ class HostData {
 
       gameController.nextPlayer(service);
     });
-
-    return service;
   }
 
   Future<void> startGame() async {

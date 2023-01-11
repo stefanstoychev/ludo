@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:parse_test/board.dart';
+import 'package:parse_test/board_data.dart';
 import 'package:parse_test/model/pawn.dart';
 
 import '../collections.dart';
 
 class PlayerService with ChangeNotifier {
-  PlayerService({required this.session});
+  PlayerService({required this.session, required this.board});
 
   final String session;
+
+  final BoardData board;
 
   final List<Pawn> pawns = [];
 
@@ -34,7 +37,7 @@ class PlayerService with ChangeNotifier {
   void addPawn(String pawnId, String ownerId, int number) {
     var playerIndex = getIndex(ownerId);
 
-    var first = Board().playerPaths[playerIndex].first;
+    var first = board.playerPaths[playerIndex].first;
 
     var x = first[0];
     var y = first[1];
@@ -51,7 +54,7 @@ class PlayerService with ChangeNotifier {
 
     var playerIndex = getIndex(pawn.ownerId);
 
-    var currentPoss = Board().playerPaths[playerIndex][position];
+    var currentPoss = board.playerPaths[playerIndex][position];
 
     pawn.x = currentPoss[0];
     pawn.y = currentPoss[1];

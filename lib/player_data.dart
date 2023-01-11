@@ -39,10 +39,8 @@ class PlayerData {
     }
   }
 
-  Future<PlayerService> initLiveQuery() async {
+  Future<void> initLiveQuery(PlayerService service) async {
     final LiveQuery liveQuery = LiveQuery();
-
-    var service = PlayerService(session: session);
 
     var pawnQuery = QueryBuilder<ParseObject>(ParseObject(pawnCollection))
       ..whereEqualTo('Session', session);
@@ -72,7 +70,5 @@ class PlayerData {
       service.setGameId(objectId);
       service.currentPlayer(playerId);
     });
-
-    return service;
   }
 }

@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:parse_test/board_data.dart';
 import 'package:provider/provider.dart';
 
+import '../board.dart';
 import '../collections.dart';
 import '../player_data.dart';
 import '../provider/player_service.dart';
@@ -22,8 +24,8 @@ class _PlayerPageState extends State<PlayerPage> {
 
   @override
   Widget build(BuildContext context) {
-
     var service = Provider.of<PlayerService>(context);
+    var boardData = Provider.of<BoardData>(context);
 
     var isMyTurn = service.currentPLayer == widget.playerData.playerId;
 
@@ -38,7 +40,7 @@ class _PlayerPageState extends State<PlayerPage> {
     var pawnToAvailableMoveAmount = <ParseObject, int>{};
 
     for (var pawn in widget.playerData.pawns) {
-      pawnToAvailableMoveAmount[pawn] = _canMovePawn(pawn);
+      pawnToAvailableMoveAmount[pawn] = _canMovePawn(pawn, boardData.maxPlayerIndex);
     }
 
     var canPass = gameInProgress &&
@@ -55,7 +57,8 @@ class _PlayerPageState extends State<PlayerPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(widget.playerData.playerId),
-            ...buildPawnWidgetsList(canMove, pawnToAvailableMoveAmount, service),
+            ...buildPawnWidgetsList(
+                canMove, pawnToAvailableMoveAmount, service),
             canPass ? _buildPassButton() : Container(),
             _buildRowDiceButton(canRowDice)
           ],
@@ -68,18 +71,18 @@ class _PlayerPageState extends State<PlayerPage> {
       Map<ParseObject, int> pawnToAvailableMoveAmount, PlayerService service) {
     return widget.playerData.pawns
         .map((pawn) => Row(
-          children: [
-            ElevatedButton(
-                onPressed: canMove && (pawnToAvailableMoveAmount[pawn])! > 0
-                    ? () async {
-                        _movePawn(
-                                service, pawn, pawnToAvailableMoveAmount[pawn] ?? 0)
-                            .then((value) => _endTurn(service.session));
-                      }
-                    : null,
-                child: Text("Move ${pawn.get("Number")}")),
-          ],
-        ))
+              children: [
+                ElevatedButton(
+                    onPressed: canMove && (pawnToAvailableMoveAmount[pawn])! > 0
+                        ? () async {
+                            _movePawn(service, pawn,
+                                    pawnToAvailableMoveAmount[pawn] ?? 0)
+                                .then((value) => _endTurn(service.session));
+                          }
+                        : null,
+                    child: Text("Move ${pawn.get("Number")}")),
+              ],
+            ))
         .toList();
   }
 
@@ -92,24 +95,24 @@ class _PlayerPageState extends State<PlayerPage> {
   Widget _buildRowDiceButton(bool canRowDice) {
     return Row(
       children: [
-        // ...List.generate(6, (index) =>
-        //     ElevatedButton(
-        //         onPressed: canRowDice
-        //             ? () {
-        //           _rolledValue = index + 1;
-        //
-        //           setState(() {});
-        //         }
-        //             : null,
-        //         child: Text("Row ${index + 1}")),),
+        ...List.generate(6, (index) =>
+            ElevatedButton(
+                onPressed: canRowDice
+                    ? () {
+                  _rolledValue = index + 1;
+
+                  setState(() {});
+                }
+                    : null,
+                child: Text("Row ${index + 1}")),),
         ElevatedButton(
             onPressed: canRowDice
                 ? () {
-                    var random = Random();
+                    setState(() {
+                      var random = Random();
 
-                    _rolledValue = random.nextInt(6) + 1;
-
-                    setState(() {});
+                      _rolledValue = random.nextInt(6) + 1;
+                    });
                   }
                 : null,
             child: Text("Row Dice")),
@@ -117,7 +120,7 @@ class _PlayerPageState extends State<PlayerPage> {
     );
   }
 
-  int _canMovePawn(ParseObject pawn) {
+  int _canMovePawn(ParseObject pawn, int maxPathIndex) {
     var position = pawn.get<int>("Position");
 
     if (position == 0) {
@@ -128,7 +131,7 @@ class _PlayerPageState extends State<PlayerPage> {
       }
     }
 
-    if (position + _rolledValue > 64) {
+    if (position + _rolledValue > maxPathIndex) {
       return 0;
     }
 
