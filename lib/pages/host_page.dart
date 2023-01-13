@@ -2,21 +2,20 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:parse_test/game_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../board.dart';
-import '../collections.dart';
+import '../game_controller.dart';
 import '../host_data.dart';
-import '../main.dart';
 import '../provider/player_service.dart';
 
 class HostPage extends StatefulWidget {
   final HostData host;
 
-  const HostPage({Key? key, required this.session, required this.host})
+  final String url;
+
+  const HostPage({Key? key, required this.session, required this.host, required this.url})
       : super(key: key);
 
   final String session;
@@ -26,7 +25,8 @@ class HostPage extends StatefulWidget {
 }
 
 class _HostPageState extends State<HostPage> {
-  final TextEditingController _controller = TextEditingController(text: url);
+
+  String get url => widget.url;
 
   @override
   Widget build(BuildContext context) {

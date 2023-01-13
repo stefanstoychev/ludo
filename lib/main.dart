@@ -15,15 +15,8 @@ import 'host_data.dart';
 import 'pages/host_page.dart';
 import 'provider/player_service.dart';
 
-String session = Guid.newGuid.value ?? "";
-
-var url = Uri.base.toString();
-
 Future<void> main() async {
-
   usePathUrlStrategy();
-
-  var hasSessionParam = getSessionFromUrlParams();
 
   await initializeParse();
 
@@ -33,9 +26,15 @@ Future<void> main() async {
 
   Widget child;
 
-  var isHost = !hasSessionParam;
+  var isHost = isHostCheck();
 
-  final service = PlayerService(session: session,board: boardData);
+  String session = Guid.newGuid.value ?? "";
+
+  if(!isHost){
+    session = getSessionFromUrlParams();
+  }
+
+  final service = PlayerService(session: session, board: boardData);
 
   if (!isHost) {
     var playerData = PlayerData(session: session);
@@ -55,6 +54,7 @@ Future<void> main() async {
     child = HostPage(
       session: session,
       host: hostData,
+      url: getJoinUrl(session),
     );
   }
 
@@ -78,22 +78,28 @@ Future<void> main() async {
   );
 }
 
-bool getSessionFromUrlParams() {
+bool isHostCheck() {
   var createdSession = Uri.base.queryParameters["session"];
 
-  if (createdSession != null) {
+  var isHost = createdSession == null;
 
-    session = createdSession;
-    return true;
-  } else {
+  return isHost;
+}
 
-    url += "?session=$session";
-    return false;
-  }
+String getSessionFromUrlParams() {
+  var createdSession = Uri.base.queryParameters["session"];
+
+  return createdSession!;
+}
+
+String getJoinUrl(String session){
+
+  var joinUrl = "${Uri.base}?session=$session";
+
+  return joinUrl;
 }
 
 Future<Parse> initializeParse() {
-
   Settings settings = kDebugMode ? LocalSettings() : ProdSettings();
 
   return Parse().initialize(

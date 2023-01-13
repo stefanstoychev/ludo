@@ -1,8 +1,9 @@
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:parse_test/game_controller.dart';
-import 'package:parse_test/provider/player_service.dart';
+
 
 import 'collections.dart';
+import 'game_controller.dart';
+import 'provider/player_service.dart';
 
 class HostData {
 

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:parse_test/board.dart';
-import 'package:parse_test/board_data.dart';
-import 'package:parse_test/model/pawn.dart';
+import '../board_data.dart';
 
 import '../collections.dart';
+import '../model/pawn.dart';
 
 class PlayerService with ChangeNotifier {
   PlayerService({required this.session, required this.board});

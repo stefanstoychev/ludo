@@ -2,10 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:parse_test/board_data.dart';
 import 'package:provider/provider.dart';
 
-import '../board.dart';
+import '../board_data.dart';
 import '../collections.dart';
 import '../player_data.dart';
 import '../provider/player_service.dart';

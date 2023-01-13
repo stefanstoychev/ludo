@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:parse_test/board_data.dart';
 import 'package:provider/provider.dart';
 
+import 'board_data.dart';
 import 'model/pawn.dart';
 import 'model/tile.dart';
 import 'provider/player_service.dart';
 
 class Board extends StatelessWidget {
-
   List<Color> colors = [Colors.red, Colors.green, Colors.blue, Colors.yellow];
 
   @override
@@ -51,7 +50,12 @@ class Board extends StatelessWidget {
           colors[playerService.playerIds.indexOf(pawnsOnCell.first.ownerId)];
       text = "${pawnsOnCell.length}";
       child = Text(text);
-      child = GridView.count(crossAxisCount: 2,children: pawnsOnCell.map((e) => FittedBox(child:Text("${e.number}"))).toList(),);
+      child = GridView.count(
+        crossAxisCount: 2,
+        children: pawnsOnCell
+            .map((e) => FittedBox(child: Text("${e.number}")))
+            .toList(),
+      );
     } else {
       if (tile.isEmpty) {
         child = const Text("");
