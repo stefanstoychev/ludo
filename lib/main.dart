@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
 import 'package:flutter/material.dart';
@@ -6,17 +7,13 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:parse_test/game_controller.dart';
 import 'package:parse_test/pages/player_page.dart';
 import 'package:parse_test/player_data.dart';
+import 'package:parse_test/settings.dart';
 import 'package:provider/provider.dart';
 
 import 'board_data.dart';
 import 'host_data.dart';
 import 'pages/host_page.dart';
 import 'provider/player_service.dart';
-
-String keyApplicationId = r"QrSbLXkrKHsybyjhJb1giMgF07HeGXFvVAjY9UCI";
-String keyParseServerUrl = r"https://parseapi.back4app.com";
-String clientKey = r"8tYgH0RfOknW8fMJ0d1NNGDhowVpndgGEXiBDTxW";
-String keyLivequeryUrl = r"https://testappstefan.b4a.io";
 
 String session = Guid.newGuid.value ?? "";
 
@@ -61,7 +58,6 @@ Future<void> main() async {
     );
   }
 
-
   runApp(
     MultiProvider(
       providers: [
@@ -85,24 +81,26 @@ Future<void> main() async {
 bool getSessionFromUrlParams() {
   var createdSession = Uri.base.queryParameters["session"];
 
-  print("Session: $createdSession");
-
   if (createdSession != null) {
+
     session = createdSession;
     return true;
   } else {
-    url += "?session=$session";
 
+    url += "?session=$session";
     return false;
   }
 }
 
 Future<Parse> initializeParse() {
+
+  Settings settings = kDebugMode ? LocalSettings() : ProdSettings();
+
   return Parse().initialize(
-    keyApplicationId,
-    keyParseServerUrl,
-    liveQueryUrl: keyLivequeryUrl,
-    clientKey: clientKey,
+    settings.keyApplicationId,
+    settings.keyParseServerUrl,
+    liveQueryUrl: settings.keyLivequeryUrl,
+    clientKey: settings.clientKey,
     debug: true,
     autoSendSessionId: true,
   );

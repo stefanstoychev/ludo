@@ -3,9 +3,7 @@ import 'package:parse_test/provider/player_service.dart';
 
 import 'collections.dart';
 
-
 class PlayerData {
-
   var session = "";
   var playerId = "";
 
@@ -27,7 +25,7 @@ class PlayerData {
     for (var i = 0; i < 4; i++) {
       var pawn = ParseObject(pawnCollection)
         ..set('Position', 0)
-        ..set('Number', i+1)
+        ..set('Number', i + 1)
         ..set('Session', session)
         ..set('PlayerId', playerId);
 
@@ -53,7 +51,9 @@ class PlayerData {
       var objectId = pawn.objectId;
       var position = pawn.get("Position");
 
-      pawns.firstWhere((element) => element.objectId == objectId).set("Position", position);
+      pawns
+          .firstWhere((element) => element.objectId == objectId)
+          .set("Position", position);
     });
 
     var gameQuery = QueryBuilder<ParseObject>(ParseObject(gameCollection))
