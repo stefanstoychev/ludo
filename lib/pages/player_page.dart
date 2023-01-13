@@ -40,7 +40,8 @@ class _PlayerPageState extends State<PlayerPage> {
     var pawnToAvailableMoveAmount = <ParseObject, int>{};
 
     for (var pawn in widget.playerData.pawns) {
-      pawnToAvailableMoveAmount[pawn] = _canMovePawn(pawn, boardData.maxPlayerIndex);
+      pawnToAvailableMoveAmount[pawn] =
+          _canMovePawn(pawn, boardData.maxPlayerIndex);
     }
 
     var canPass = gameInProgress &&
@@ -57,22 +58,38 @@ class _PlayerPageState extends State<PlayerPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(widget.playerData.playerId),
-            ...buildPawnWidgetsList(
-                canMove, pawnToAvailableMoveAmount, service),
+            _rolledValue > 0
+                ? Text("Dice Roll: $_rolledValue",
+                    style: TextStyle(fontSize: 30))
+                : Container(),
+            // ...buildPawnWidgetsList(
+            //     canMove, pawnToAvailableMoveAmount, service),
             canPass ? _buildPassButton() : Container(),
-            _buildRowDiceButton(canRowDice)
+            Expanded(
+              child: GridView.count(
+                childAspectRatio: 2,
+                crossAxisCount: 2,
+                children: buildPawnWidgetsList(
+                        canMove, pawnToAvailableMoveAmount, service)
+                    .toList(),
+              ),
+            ),
+            Row(
+              children: [
+                _buildRowDiceButton(canRowDice),
+              ],
+            )
           ],
         ),
       ),
     );
   }
 
-  List<Row> buildPawnWidgetsList(bool canMove,
+  List<Widget> buildPawnWidgetsList(bool canMove,
       Map<ParseObject, int> pawnToAvailableMoveAmount, PlayerService service) {
     return widget.playerData.pawns
-        .map((pawn) => Row(
-              children: [
-                ElevatedButton(
+        .map((pawn) => FittedBox(
+          child: ElevatedButton(
                     onPressed: canMove && (pawnToAvailableMoveAmount[pawn])! > 0
                         ? () async {
                             _movePawn(service, pawn,
@@ -81,8 +98,8 @@ class _PlayerPageState extends State<PlayerPage> {
                           }
                         : null,
                     child: Text("Move ${pawn.get("Number")}")),
-              ],
-            ))
+        ),
+            )
         .toList();
   }
 
@@ -95,16 +112,18 @@ class _PlayerPageState extends State<PlayerPage> {
   Widget _buildRowDiceButton(bool canRowDice) {
     return Row(
       children: [
-        ...List.generate(6, (index) =>
-            ElevatedButton(
-                onPressed: canRowDice
-                    ? () {
-                  _rolledValue = index + 1;
+        ...List.generate(
+          6,
+          (index) => ElevatedButton(
+              onPressed: canRowDice
+                  ? () {
+                      _rolledValue = index + 1;
 
-                  setState(() {});
-                }
-                    : null,
-                child: Text("Row ${index + 1}")),),
+                      setState(() {});
+                    }
+                  : null,
+              child: Text("Row ${index + 1}")),
+        ),
         ElevatedButton(
             onPressed: canRowDice
                 ? () {
