@@ -5,7 +5,7 @@ import 'model/tile.dart';
 import 'utils/rotator.dart';
 
 class BoardData extends ChangeNotifier {
-  static var _playerPath = [
+  static final _playerPath = [
     [13, 1],
     ...List.generate(6, (index) => [9 + index, 6]).reversed,
     [9, 5],
@@ -28,35 +28,35 @@ class BoardData extends ChangeNotifier {
   List<List<List<int>>> playerPaths = [];
 
   static Tile SU =
-      Tile(icon: CupertinoIcons.arrow_down_circle, color: Colors.blue);
+      const Tile(icon: CupertinoIcons.arrow_down_circle, color: Colors.blue);
   static Tile SD =
-      Tile(icon: CupertinoIcons.arrow_up_circle, color: Colors.red);
+      const Tile(icon: CupertinoIcons.arrow_up_circle, color: Colors.red);
   static Tile SR =
-      Tile(icon: CupertinoIcons.arrow_left_circle, color: Colors.green);
+      const Tile(icon: CupertinoIcons.arrow_left_circle, color: Colors.green);
   static Tile SL =
-      Tile(icon: CupertinoIcons.arrow_right_circle, color: Colors.yellow);
+      const Tile(icon: CupertinoIcons.arrow_right_circle, color: Colors.yellow);
 
-  static Tile FU = Tile(icon: Icons.home, color: Colors.blue);
-  static Tile FD = Tile(icon: Icons.home, color: Colors.red);
-  static Tile FR = Tile(icon: Icons.home, color: Colors.green);
-  static Tile FL = Tile(icon: Icons.home, color: Colors.yellow);
+  static Tile FU = const Tile(icon: Icons.home, color: Colors.blue);
+  static Tile FD = const Tile(icon: Icons.home, color: Colors.red);
+  static Tile FR = const Tile(icon: Icons.home, color: Colors.green);
+  static Tile FL = const Tile(icon: Icons.home, color: Colors.yellow);
 
   static Tile PU =
-      Tile(icon: CupertinoIcons.arrow_turn_right_down, color: Colors.blue);
+      const Tile(icon: CupertinoIcons.arrow_turn_right_down, color: Colors.blue);
   static Tile PD =
-      Tile(icon: CupertinoIcons.arrow_turn_left_up, color: Colors.red);
+      const Tile(icon: CupertinoIcons.arrow_turn_left_up, color: Colors.red);
   static Tile PR =
-      Tile(icon: CupertinoIcons.arrow_turn_down_left, color: Colors.green);
+      const Tile(icon: CupertinoIcons.arrow_turn_down_left, color: Colors.green);
   static Tile PL =
-      Tile(icon: CupertinoIcons.arrow_turn_up_right, color: Colors.yellow);
+      const Tile(icon: CupertinoIcons.arrow_turn_up_right, color: Colors.yellow);
 
-  static Tile EA = Tile(
+  static Tile EA = const Tile(
       icon: Icons.add_circle,
       color: Colors.white,
       hasBorder: false,
       isEmpty: true);
   static Tile PA =
-      Tile(icon: Icons.accessibility, color: Colors.grey, isEmpty: true);
+      const Tile(icon: Icons.accessibility, color: Colors.grey, isEmpty: true);
 
   final BOARD = [
     [EA, EA, EA, EA, EA, EA, PA, PU, SU, EA, EA, EA, EA, EA, EA],
