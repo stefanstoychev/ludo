@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'board_data.dart';
 import 'host_data.dart';
 import 'pages/host_page.dart';
+import 'provider/parse_server.dart';
 import 'provider/player_service.dart';
 
 Future<void> main() async {
@@ -21,6 +22,7 @@ Future<void> main() async {
   await initializeParse();
 
   GameController gameController = GameController();
+  var parseServer = ParseServer();
 
   var boardData = BoardData();
 
@@ -30,20 +32,24 @@ Future<void> main() async {
 
   String session = Guid.newGuid.value ?? "";
 
-  if(!isHost){
+  if (!isHost) {
     session = getSessionFromUrlParams();
   }
 
-  final service = PlayerService(session: session, board: boardData);
+  final service = PlayerService(
+      session: session, board: boardData, parseServer: parseServer);
 
   if (!isHost) {
-    var playerData = PlayerData(session: session);
+    var playerData = PlayerData(session: session, parseServer: parseServer);
 
     await playerData.initLiveQuery(service);
 
     await playerData.joinPlayer();
 
-    child = PlayerPage(playerData: playerData);
+    child = PlayerPage(
+      playerData: playerData,
+      parseServer: parseServer,
+    );
   } else {
     var hostData = HostData(session: session);
 
@@ -92,8 +98,7 @@ String getSessionFromUrlParams() {
   return createdSession!;
 }
 
-String getJoinUrl(String session){
-
+String getJoinUrl(String session) {
   var joinUrl = "${Uri.base}?session=$session";
 
   return joinUrl;
@@ -107,7 +112,7 @@ Future<Parse> initializeParse() {
     settings.keyParseServerUrl,
     liveQueryUrl: settings.keyLivequeryUrl,
     clientKey: settings.clientKey,
-    debug: true,
+    debug: false,
     autoSendSessionId: true,
   );
 }

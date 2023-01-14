@@ -1,39 +1,31 @@
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 import 'collections.dart';
+import 'model/pawn.dart';
+import 'provider/parse_server.dart';
 import 'provider/player_service.dart';
 
 class PlayerData {
   var session = "";
   var playerId = "";
 
-  var pawns = <ParseObject>[];
+  var pawns = <Pawn>[];
 
-  PlayerData({required this.session});
+  ParseServer parseServer;
+
+  PlayerData({required this.session, required this.parseServer});
 
   Future<void> joinPlayer() async {
-    var player = ParseObject(playerCollection)
-      ..set('Name', 'Player Name')
-      ..set('Session', session);
-
-    await player.save();
-
-    playerId = player.objectId;
-
-    print("Player joined: ${player.objectId}");
+    playerId = await parseServer.joinPlayer(session);
 
     for (var i = 0; i < 4; i++) {
-      var pawn = ParseObject(pawnCollection)
-        ..set('Position', 0)
-        ..set('Number', i + 1)
-        ..set('Session', session)
-        ..set('PlayerId', playerId);
+      var position = 0;
+      var number = i + 1;
 
-      await pawn.save();
+      var pawn =
+          await parseServer.joinPawn(position, number, session, playerId);
 
       pawns.add(pawn);
-
-      print("Pawn added: ${pawn.objectId}");
     }
   }
 
@@ -49,11 +41,17 @@ class PlayerData {
       var pawn = value as ParseObject;
 
       var objectId = pawn.objectId;
-      var position = pawn.get("Position");
 
-      pawns
-          .firstWhere((element) => element.objectId == objectId)
-          .set("Position", position);
+      Pawn first = pawns.firstWhere((element) => element.id == objectId);
+
+      var position = pawn.get("Position");
+      var x = pawn.get("X");
+      var y = pawn.get("Y");
+
+      first.position = position;
+
+      first.x = x;
+      first.y = y;
     });
 
     var gameQuery = QueryBuilder<ParseObject>(ParseObject(gameCollection))

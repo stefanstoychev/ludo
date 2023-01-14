@@ -7,6 +7,8 @@ import 'provider/player_service.dart';
 
 class HostData {
 
+  var hostDebug = "Host";
+
   var session = "";
 
   var gameId = "";
@@ -23,7 +25,7 @@ class HostData {
     Subscription playerSubscription = await liveQuery.client.subscribe(playerQuery);
 
     playerSubscription.on(LiveQueryEvent.create, (value) {
-      print(" #### Game created event called");
+      print(" #### $hostDebug Player added to board called");
       var objectId = (value as ParseObject).objectId;
 
       service.addPlayer(objectId);
@@ -35,7 +37,7 @@ class HostData {
     Subscription pawnSubscription = await liveQuery.client.subscribe(pawnQuery);
 
     pawnSubscription.on(LiveQueryEvent.create, (value) {
-      print(" #### Player has joined event called");
+      print(" #### $hostDebug Pawn board add event called");
       var objectId = (value as ParseObject).objectId;
       var ownerId = (value as ParseObject).get("PlayerId");
       var number = (value as ParseObject).get<int>("Number");
@@ -44,7 +46,7 @@ class HostData {
     });
 
     pawnSubscription.on(LiveQueryEvent.update, (value) {
-      print(" #### Pawn moved");
+      print(" #### $hostDebug Pawn moved");
       var pawn = value as ParseObject;
 
       var objectId = pawn.objectId;
@@ -60,7 +62,7 @@ class HostData {
 
     gameSubscription.on(LiveQueryEvent.update, (value) {
 
-      print("### Player moved");
+      print(" #### $hostDebug Player end turn");
 
       var game = value as ParseObject;
 

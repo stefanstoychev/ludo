@@ -1,30 +1,35 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:provider/provider.dart';
 
 import '../board_data.dart';
-import '../collections.dart';
+import '../model/pawn.dart';
 import '../player_data.dart';
+import '../provider/parse_server.dart';
 import '../provider/player_service.dart';
 
 class PlayerPage extends StatefulWidget {
-  const PlayerPage({Key? key, required this.playerData}) : super(key: key);
+
+  const PlayerPage({Key? key, required this.playerData, required this.parseServer}) : super(key: key);
 
   final PlayerData playerData;
+
+  final ParseServer parseServer;
 
   @override
   State<PlayerPage> createState() => _PlayerPageState();
 }
 
 class _PlayerPageState extends State<PlayerPage> {
+
   var _rolledValue = 0;
 
   @override
   Widget build(BuildContext context) {
+
     var service = Provider.of<PlayerService>(context);
-    var boardData = Provider.of<BoardData>(context);
 
     var isMyTurn = service.currentPLayer == widget.playerData.playerId;
 
@@ -36,21 +41,24 @@ class _PlayerPageState extends State<PlayerPage> {
 
     var canRowDice = isMyTurn && !isDiceRolled;
 
-    var pawnToAvailableMoveAmount = <ParseObject, int>{};
+    var pawnToAvailableMoveAmount = <Pawn, int>{};
+
+    var boardData = Provider.of<BoardData>(context);
 
     for (var pawn in widget.playerData.pawns) {
-      pawnToAvailableMoveAmount[pawn] =
-          _canMovePawn(pawn, boardData.maxPlayerIndex);
+      pawnToAvailableMoveAmount[pawn] = _canMovePawn(pawn, boardData.maxPlayerIndex);
     }
+
+    var hasAvailableMoves = pawnToAvailableMoveAmount.values.any((element) => element > 0);
 
     var canPass = gameInProgress &&
         isMyTurn &&
         isDiceRolled &&
-        !pawnToAvailableMoveAmount.values.any((element) => element > 0);
+        !hasAvailableMoves;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Player page"),
+        title: const Text("Player page"),
       ),
       body: Center(
         child: Column(
@@ -59,10 +67,8 @@ class _PlayerPageState extends State<PlayerPage> {
             Text(widget.playerData.playerId),
             _rolledValue > 0
                 ? Text("Dice Roll: $_rolledValue",
-                    style: TextStyle(fontSize: 30))
+                    style: const TextStyle(fontSize: 30))
                 : Container(),
-            // ...buildPawnWidgetsList(
-            //     canMove, pawnToAvailableMoveAmount, service),
             canPass ? _buildPassButton() : Container(),
             Expanded(
               child: GridView.count(
@@ -85,18 +91,22 @@ class _PlayerPageState extends State<PlayerPage> {
   }
 
   List<Widget> buildPawnWidgetsList(bool canMove,
-      Map<ParseObject, int> pawnToAvailableMoveAmount, PlayerService service) {
+      Map<Pawn, int> pawnToAvailableMoveAmount,
+      PlayerService service) {
     return widget.playerData.pawns
         .map((pawn) => FittedBox(
           child: ElevatedButton(
                     onPressed: canMove && (pawnToAvailableMoveAmount[pawn])! > 0
                         ? () async {
-                            _movePawn(service, pawn,
-                                    pawnToAvailableMoveAmount[pawn] ?? 0)
-                                .then((value) => _endTurn(service.session));
+                            await widget.parseServer.movePawn(pawn, pawnToAvailableMoveAmount[pawn] ?? 0);
+
+                            await _endTurn(service.session);
+
+                            print("Calling set state");
+                            setState(() {});
                           }
                         : null,
-                    child: Text("Move ${pawn.get("Number")}")),
+                    child: Text("Move ${pawn.number}")),
         ),
             )
         .toList();
@@ -105,13 +115,13 @@ class _PlayerPageState extends State<PlayerPage> {
   ElevatedButton _buildPassButton() {
     return ElevatedButton(
         onPressed: () => _endTurn(widget.playerData.session),
-        child: Text("Pass"));
+        child: const Text("Pass"));
   }
 
   Widget _buildRowDiceButton(bool canRowDice) {
     return Row(
       children: [
-        ...List.generate(
+        ...kDebugMode?List.generate(
           6,
           (index) => ElevatedButton(
               onPressed: canRowDice
@@ -122,7 +132,7 @@ class _PlayerPageState extends State<PlayerPage> {
                     }
                   : null,
               child: Text("Row ${index + 1}")),
-        ),
+        ):[],
         ElevatedButton(
             onPressed: canRowDice
                 ? () {
@@ -138,8 +148,8 @@ class _PlayerPageState extends State<PlayerPage> {
     );
   }
 
-  int _canMovePawn(ParseObject pawn, int maxPathIndex) {
-    var position = pawn.get<int>("Position");
+  int _canMovePawn(Pawn pawn, int maxPathIndex) {
+    var position = pawn.position;
 
     if (position == 0) {
       if (_rolledValue == 6) {
@@ -156,28 +166,12 @@ class _PlayerPageState extends State<PlayerPage> {
     return _rolledValue;
   }
 
-  Future<void> _movePawn(
-      PlayerService service, ParseObject pawn, int amount) async {
-    var position = pawn.get("Position");
-
-    pawn.set("Position", position + amount);
-
-    await pawn.save();
-  }
-
   Future<void> _endTurn(String session) async {
     _rolledValue = 0;
 
-    final QueryBuilder<ParseObject> query =
-        QueryBuilder<ParseObject>(ParseObject(gameCollection))
-          ..whereEqualTo("Session", session);
+    if(_rolledValue == 6)
+      return;
 
-    final ParseResponse gameResponse = await query.query();
-
-    var game = (gameResponse.result as List<ParseObject>).first;
-
-    game.set("Done", true);
-
-    game.save();
+    await widget.parseServer.endTurn(session);
   }
 }

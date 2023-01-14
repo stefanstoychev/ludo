@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import '../board_data.dart';
 
-import '../collections.dart';
+import '../board_data.dart';
 import '../model/pawn.dart';
+import 'parse_server.dart';
 
 class PlayerService with ChangeNotifier {
-  PlayerService({required this.session, required this.board});
+  PlayerService({required this.session, required this.board, required this.parseServer});
 
   final String session;
+  final ParseServer parseServer;
 
   final BoardData board;
 
@@ -59,8 +59,9 @@ class PlayerService with ChangeNotifier {
     pawn.y = currentPoss[1];
     pawn.position = position;
 
-    if(position != 0)
+    if(position != 0) {
       _handleCollisions(pawn.ownerId, pawn.x, pawn.y);
+    }
 
     notifyListeners();
   }
@@ -79,16 +80,8 @@ class PlayerService with ChangeNotifier {
 
     for(var collision in collisions){
 
-      var apiResponse = await ParseObject(pawnCollection).getObject(collision.id);
+      parseServer.resetPawn(collision.id);
 
-      if (apiResponse.success && apiResponse.results != null) {
-        for (var o in apiResponse.results) {
-          final pawn = o as ParseObject;
-          pawn.set("Position", 0);
-
-          await pawn.save();
-        }
-      }
     }
   }
 
