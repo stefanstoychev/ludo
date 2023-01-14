@@ -1,8 +1,9 @@
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:parse_test/provider/parse_server.dart';
 
 
 import 'collections.dart';
-import 'game_controller.dart';
+
 import 'provider/player_service.dart';
 
 class HostData {
@@ -13,9 +14,9 @@ class HostData {
 
   var gameId = "";
 
-  HostData({required this.session});
+  HostData({required this.session, });
 
-  Future<void> initLiveQuery(GameController gameController, PlayerService service) async {
+  Future<void> initLiveQuery(ParseServer parseServer, PlayerService service) async {
 
     final LiveQuery liveQuery = LiveQuery();
 
@@ -76,7 +77,7 @@ class HostData {
       if(!done)
         return;
 
-      gameController.nextPlayer(service);
+      parseServer.nextPlayer(service);
     });
   }
 
@@ -91,4 +92,5 @@ class HostData {
 
     gameId = game.objectId;
   }
+
 }

@@ -3,11 +3,8 @@ import 'package:flutter_web_plugins/url_strategy.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_guid/flutter_guid.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:parse_test/game_controller.dart';
 import 'package:parse_test/pages/player_page.dart';
 import 'package:parse_test/player_data.dart';
-import 'package:parse_test/settings.dart';
 import 'package:provider/provider.dart';
 
 import 'board_data.dart';
@@ -19,10 +16,9 @@ import 'provider/player_service.dart';
 Future<void> main() async {
   usePathUrlStrategy();
 
-  await initializeParse();
-
-  GameController gameController = GameController();
   var parseServer = ParseServer();
+
+  await parseServer.initializeParse();
 
   var boardData = BoardData();
 
@@ -53,7 +49,7 @@ Future<void> main() async {
   } else {
     var hostData = HostData(session: session);
 
-    await hostData.initLiveQuery(gameController, service);
+    await hostData.initLiveQuery(parseServer, service);
 
     await hostData.startGame();
 
@@ -71,7 +67,7 @@ Future<void> main() async {
           create: (_) => service,
         ),
         ChangeNotifierProvider(
-          create: (_) => gameController,
+          create: (_) => parseServer,
         ),
         ChangeNotifierProvider(
           create: (_) => boardData,
@@ -102,19 +98,6 @@ String getJoinUrl(String session) {
   var joinUrl = "${Uri.base}?session=$session";
 
   return joinUrl;
-}
-
-Future<Parse> initializeParse() {
-  Settings settings = kDebugMode ? LocalSettings() : ProdSettings();
-
-  return Parse().initialize(
-    settings.keyApplicationId,
-    settings.keyParseServerUrl,
-    liveQueryUrl: settings.keyLivequeryUrl,
-    clientKey: settings.clientKey,
-    debug: false,
-    autoSendSessionId: true,
-  );
 }
 
 class MyApp extends StatelessWidget {

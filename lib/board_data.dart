@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:parse_test/utils/rotator.dart';
 
 import 'model/tile.dart';
+import 'utils/rotator.dart';
 
 class BoardData extends ChangeNotifier {
   static var _playerPath = [

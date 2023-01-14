@@ -2,15 +2,16 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:parse_test/provider/parse_server.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../board.dart';
-import '../game_controller.dart';
 import '../host_data.dart';
 import '../provider/player_service.dart';
 
 class HostPage extends StatefulWidget {
+
   final HostData host;
 
   final String url;
@@ -30,8 +31,10 @@ class _HostPageState extends State<HostPage> {
 
   @override
   Widget build(BuildContext context) {
+
     var playerService = Provider.of<PlayerService>(context);
-    var gameController = Provider.of<GameController>(context);
+
+    var parseServer = Provider.of<ParseServer>(context);
 
     var size = MediaQuery.of(context).size;
 
@@ -50,9 +53,9 @@ class _HostPageState extends State<HostPage> {
 
     var startButton = ElevatedButton(
         onPressed: () async {
-          gameController.nextPlayer(playerService);
+          parseServer.nextPlayer(playerService);
         },
-        child: Text("Start"));
+        child: const Text("Start"));
 
     return Scaffold(
       body: Row(
