@@ -27,36 +27,27 @@ class BoardData extends ChangeNotifier {
 
   List<List<List<int>>> playerPaths = [];
 
-  static Tile SU =
-      const Tile(icon: CupertinoIcons.arrow_down_circle, color: Colors.blue);
-  static Tile SD =
-      const Tile(icon: CupertinoIcons.arrow_up_circle, color: Colors.red);
-  static Tile SR =
-      const Tile(icon: CupertinoIcons.arrow_left_circle, color: Colors.green);
-  static Tile SL =
-      const Tile(icon: CupertinoIcons.arrow_right_circle, color: Colors.yellow);
+  static Tile SU = const Tile(CupertinoIcons.arrow_down_circle, Colors.blue);
+  static Tile SD = const Tile(CupertinoIcons.arrow_up_circle, Colors.red);
+  static Tile SR = const Tile(CupertinoIcons.arrow_left_circle, Colors.green);
+  static Tile SL = const Tile(CupertinoIcons.arrow_right_circle, Colors.yellow);
 
-  static Tile FU = const Tile(icon: Icons.home, color: Colors.blue);
-  static Tile FD = const Tile(icon: Icons.home, color: Colors.red);
-  static Tile FR = const Tile(icon: Icons.home, color: Colors.green);
-  static Tile FL = const Tile(icon: Icons.home, color: Colors.yellow);
+  static Tile FU = const Tile(Icons.home, Colors.blue);
+  static Tile FD = const Tile(Icons.home, Colors.red);
+  static Tile FR = const Tile(Icons.home, Colors.green);
+  static Tile FL = const Tile(Icons.home, Colors.yellow);
 
   static Tile PU =
-      const Tile(icon: CupertinoIcons.arrow_turn_right_down, color: Colors.blue);
-  static Tile PD =
-      const Tile(icon: CupertinoIcons.arrow_turn_left_up, color: Colors.red);
+      const Tile(CupertinoIcons.arrow_turn_right_down, Colors.blue);
+  static Tile PD = const Tile(CupertinoIcons.arrow_turn_left_up, Colors.red);
   static Tile PR =
-      const Tile(icon: CupertinoIcons.arrow_turn_down_left, color: Colors.green);
+      const Tile(CupertinoIcons.arrow_turn_down_left, Colors.green);
   static Tile PL =
-      const Tile(icon: CupertinoIcons.arrow_turn_up_right, color: Colors.yellow);
+      const Tile(CupertinoIcons.arrow_turn_up_right, Colors.yellow);
 
-  static Tile EA = const Tile(
-      icon: Icons.add_circle,
-      color: Colors.white,
-      hasBorder: false,
-      isEmpty: true);
-  static Tile PA =
-      const Tile(icon: Icons.accessibility, color: Colors.grey, isEmpty: true);
+  static Tile EA = const Tile(Icons.add_circle, Colors.white,
+      hasBorder: false, isEmpty: true);
+  static Tile PA = const Tile(Icons.accessibility, Colors.grey, isEmpty: true);
 
   final BOARD = [
     [EA, EA, EA, EA, EA, EA, PA, PU, SU, EA, EA, EA, EA, EA, EA],
@@ -77,7 +68,9 @@ class BoardData extends ChangeNotifier {
   ];
 
   int get height => BOARD.length;
+
   int get width => BOARD.first.length;
+
   int get maxPlayerIndex => _playerPath.length - 1;
 
   BoardData() {

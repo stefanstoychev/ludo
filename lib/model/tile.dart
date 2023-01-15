@@ -6,5 +6,5 @@ class Tile {
   final bool hasBorder;
   final bool isEmpty;
 
-  const Tile({required this.icon, required this.color, this.hasBorder = true, this.isEmpty = false});
+  const Tile(this.icon, this.color, {this.hasBorder = true, this.isEmpty = false});
 }
